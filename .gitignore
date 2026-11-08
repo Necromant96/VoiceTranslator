@@ -1,0 +1,18 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Локальные настройки IDE/SDK
+local.properties
+.idea/
+*.iml
+
+# Логи и временные файлы
+build_log.txt
+*.log
+
+# Прочее
+.DS_Store
+captures/
+.cxx/

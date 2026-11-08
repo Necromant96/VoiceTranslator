@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#F5F6FA</color>
+    <color name="sideA">#E3F2FD</color>
+    <color name="sideB">#E8F5E9</color>
+    <color name="sideA_accent">#1565C0</color>
+    <color name="sideB_accent">#2E7D32</color>
+    <color name="text_main">#212121</color>
+    <color name="text_secondary">#757575</color>
+</resources>

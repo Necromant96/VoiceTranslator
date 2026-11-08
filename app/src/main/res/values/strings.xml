@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Голосовой переводчик</string>
+
+    <string name="app_subtitle">Диалоги в реальном времени</string>
+    <string name="speaker_a">Собеседник A</string>
+    <string name="speaker_b">Собеседник B</string>
+    <string name="mic_a">🎤 Говорить (A)</string>
+    <string name="mic_b">🎤 Говорить (B)</string>
+    <string name="mic_listening">⏹ Слушаю…</string>
+    <string name="continuous">Непрерывно</string>
+    <string name="swap">⇄</string>
+    <string name="clear">Очистить диалог</string>
+    <string name="copy">Скопировать</string>
+
+    <string name="hint_idle">Нажмите «Говорить» и произнесите фразу</string>
+    <string name="hint_listening">Слушаю…</string>
+    <string name="hint_processing">Обрабатываю…</string>
+    <string name="hint_translating">Перевожу…</string>
+    <string name="hint_speaking">Озвучиваю…</string>
+
+    <string name="no_speech">Распознавание речи недоступно на этом устройстве</string>
+    <string name="mic_permission">Нужно разрешение на микрофон</string>
+    <string name="translated_copied">Диалог скопирован</string>
+    <string name="translation_error">Ошибка перевода</string>
+    <string name="tts_lang_error">Установленный синтезатор речи не поддерживает этот язык</string>
+</resources>
