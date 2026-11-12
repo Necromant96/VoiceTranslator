@@ -4,7 +4,7 @@ from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.oxml.ns import qn
 
 PRIMARY   = RGBColor(0x15, 0x65, 0xC0)   # глубокий синий
@@ -223,9 +223,74 @@ text(s, Inches(9.15), Inches(2.55), Inches(3.5), Inches(3.6),
      "MainActivity.kt\n   логика: аудио → текст\n\nSpeechRecognizer\n   распознавание\n\nTextToSpeech\n   озвучка\n\nres/layout/\n   экран, чат, кнопки\n\nres/drawable/\n   стиль и кнопки UI",
      size=12, color=RGBColor(0xD5, 0xDE, 0xE6), font="Consolas")
 
-# ================= 6. КЛЮЧЕВЫЕ ТЕХНИЧЕСКИЕ РЕШЕНИЯ =================
+# ================= 6. ER-ДИАГРАММА =================
 s = add_slide()
-header(s, 6, "Ключевые технические решения")
+header(s, 6, "ER-диаграмма данных", "Сущности приложения и связи между ними")
+
+def entity(x, y, w, title_, rows, color):
+    hh = Inches(0.5)
+    bh = Inches(0.42) * len(rows)
+    rect(s, x, y, w, hh, color, radius=0.08)
+    rect(s, x, y + hh, w, bh, WHITE, line=color, shape=MSO_SHAPE.RECTANGLE)
+    text(s, x, y + Inches(0.1), w, Inches(0.4), title_, size=15, color=WHITE,
+         bold=True, align=PP_ALIGN.CENTER, font="Consolas")
+    yy = y + hh + Inches(0.05)
+    for fname, ftype, badge in rows:
+        text(s, x + Inches(0.15), yy, w - Inches(0.3), Inches(0.4),
+             (badge + " " if badge else "") + fname + " : " + ftype,
+             size=12, color=DARK, font="Consolas")
+        yy += Inches(0.42)
+
+def conn(x1, y1, x2, y2, label):
+    c = s.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
+                               Inches(x1), Inches(y1), Inches(x2), Inches(y2))
+    c.line.color.rgb = GRAY
+    c.line.width = Pt(2)
+    text(s, Inches((x1 + x2) / 2 - 1.1), Inches((y1 + y2) / 2 - 0.5),
+         Inches(2.2), Inches(0.35), label, size=11, color=PRIMARY,
+         bold=True, align=PP_ALIGN.CENTER)
+
+# Сущности
+entity(Inches(0.6), Inches(2.6), Inches(3.1), "LANGUAGE", [
+    ("code", "String", "PK"),
+    ("name", "String", ""),
+], SECONDARY)
+
+entity(Inches(5.05), Inches(2.3), Inches(3.2), "DIALOGUE", [
+    ("id", "Long", "PK"),
+    ("date_start", "DateTime", ""),
+    ("lang_A", "-> Language", "FK"),
+    ("lang_B", "-> Language", "FK"),
+], PRIMARY)
+
+entity(Inches(9.25), Inches(1.95), Inches(3.5), "MESSAGE", [
+    ("id", "Long", "PK"),
+    ("dialogue_id", "-> Dialogue", "FK"),
+    ("speaker", "Int (0=A, 1=B)", ""),
+    ("original_text", "String", ""),
+    ("translated_text", "String", ""),
+    ("created_at", "DateTime", ""),
+], BLUE)
+
+# Связи
+conn(3.7, 3.05, 5.05, 3.1, "lang_A   1 : N")
+conn(3.7, 3.5, 5.05, 3.55, "lang_B   1 : N")
+conn(8.25, 3.4, 9.25, 3.4, "contains   1 : N")
+
+# Легенда и пояснение
+rect(s, Inches(0.55), Inches(5.35), Inches(12.25), Inches(1.55), LIGHT)
+text(s, Inches(0.85), Inches(5.5), Inches(11.7), Inches(0.4),
+     "PK — первичный ключ,  FK — внешний ключ (ссылка),  N — «много»",
+     size=12.5, color=GRAY)
+text(s, Inches(0.85), Inches(5.95), Inches(11.7), Inches(0.9),
+     "В текущей версии диалог хранится в памяти (ArrayList). ER-модель — основа для\n"
+     "сохранения истории в локальную базу (Room/SQLite): «Сохранённые диалоги» —\n"
+     "первый пункт из планов развития приложения.",
+     size=13.5, color=DARK)
+
+# ================= 7. КЛЮЧЕВЫЕ ТЕХНИЧЕСКИЕ РЕШЕНИЯ =================
+s = add_slide()
+header(s, 7, "Ключевые технические решения")
 cards = [
     ("🔁 Непрерывный режим",
      "После каждой реплики и паузы синтезатор сообщает о конце озвучки —\nи микрофон включается заново сам.\nПолучается живой разговор без кнопок.",
@@ -251,7 +316,7 @@ text(s, Inches(0.85), Inches(5.85), Inches(11.7), Inches(0.9),
 
 # ================= 7. КОНКУРЕНТЫ =================
 s = add_slide()
-header(s, 7, "Конкуренты", "Сравнение с популярными переводчиками")
+header(s, 8, "Конкуренты", "Сравнение с популярными переводчиками")
 rows, cols = 8, 5
 tx, ty = Inches(0.5), Inches(1.75)
 tbl_shape = s.shapes.add_table(rows, cols, tx, ty, Inches(12.4), Inches(4.6))
@@ -291,7 +356,7 @@ for r_ in range(rows):
 
 # ================= 8. ПОЧЕМУ НАШЕ ЛУЧШЕ =================
 s = add_slide()
-header(s, 8, "Почему наше приложение лучше")
+header(s, 9, "Почему наше приложение лучше")
 rect(s, Inches(0.5), Inches(1.6), Inches(12.35), Inches(5.4), LIGHT)
 points = [
     ("1", "Целевое назначение", "Создан ровно для одного сценария — живой диалог двух людей. Не надо искать «режим спасательной фразы» или переключать языки."),
@@ -309,7 +374,7 @@ for num, t1, t2 in points:
 
 # ================= 9. РЕЗУЛЬТАТЫ =================
 s = add_slide()
-header(s, 9, "Что уже готово")
+header(s, 10, "Что уже готово")
 stats = [
     ("≈ 1 МБ", "размер приложения", PRIMARY),
     ("15", "языков", BLUE),
